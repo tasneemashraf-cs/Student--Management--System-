@@ -14,6 +14,8 @@ namespace Student_Management_System
 
         public int  DurationInHours { get; set; }
 
-
+        public int InstructorId { get; set; }
+        public Instructor Instructor { get; set; } = null!;
+        public ICollection<Student> Students { get; set; } = new List<Student>();
     }
 }

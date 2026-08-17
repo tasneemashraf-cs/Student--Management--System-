@@ -18,12 +18,26 @@ namespace Student_Management_System.Data
 
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Student>().HasKey(s => s.Id);
+            // Student ↔ Course (Many-to-Many)
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.Courses)
+                .WithMany(c => c.Students);
+
+            // Instructor → Course (One-to-Many)
+            modelBuilder.Entity<Instructor>()
+                .HasMany(i => i.Courses)
+                .WithOne(c => c.Instructor)
+                .HasForeignKey(c => c.InstructorId)
+                .OnDelete(DeleteBehavior.Restrict);
+     
+        modelBuilder.Entity<Student>().HasKey(s => s.Id);
             modelBuilder.Entity<Student>().Property(s => s.FullName).HasColumnName("Name");
 
             modelBuilder.Entity<Student>().Property(s => s.Percentage).HasColumnType("decimal(4,2)");
@@ -55,8 +69,9 @@ namespace Student_Management_System.Data
                     Id = 1,
                     FullName = "Ahmed Ali",
                     Email = "ahmed@gmail.com",
+                    Percentage = 85.50m,
                     Age = 20,
-                    Percentage = 85.50m
+                    
                 },
 
                 new Student
@@ -144,21 +159,52 @@ namespace Student_Management_System.Data
 
             );
 
+            modelBuilder.Entity<Instructor>().HasData(
+                new Instructor
+                {
+                    Id = 1,
+                    Name = "Mohamed Ahmed",
+                    Email = "mohamed@gmail.com",
+                    Specialization = "C# Programming"
+                },
+                new Instructor
+                {
+                    Id = 2,
+                    Name = "Ahmed Hassan",
+                    Email = "ahmed@gmail.com",
+                    Specialization = "Database Systems"
+                },
+                new Instructor
+                {
+                    Id = 3,
+                    Name = "Omar Ali",
+                    Email = "omar@gmail.com",
+                    Specialization = "Web Development"
+                }
+            );
+
+
+           
+
+
             modelBuilder.Entity<Course>().HasData(
             new Course
       {
           Id = 1,
           Name = "C# Programming",
           Description = "Introduction to C# programming",
-          DurationInHours = 40
-      },
+          DurationInHours = 40,
+           InstructorId = 1
+
+            },
 
       new Course
       {
           Id = 2,
           Name = "Database Systems",
           Description = "Introduction to databases and SQL",
-          DurationInHours = 35
+          DurationInHours = 35,
+          InstructorId=2
       },
 
       new Course
@@ -166,7 +212,8 @@ namespace Student_Management_System.Data
           Id = 3,
           Name = "Data Structures",
           Description = "Arrays, linked lists, stacks, queues and trees",
-          DurationInHours = 45
+          DurationInHours = 45,
+          InstructorId=1
       },
 
       new Course
@@ -174,7 +221,8 @@ namespace Student_Management_System.Data
           Id = 4,
           Name = "Web Development",
           Description = "Fundamentals of web development",
-          DurationInHours = 50
+          DurationInHours = 50,
+          InstructorId = 2
       },
 
       new Course
@@ -182,9 +230,24 @@ namespace Student_Management_System.Data
           Id = 5,
           Name = "Software Engineering",
           Description = "Software development principles and practices",
-          DurationInHours = 30
+          DurationInHours = 30,
+          InstructorId = 1
       }
   );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         }

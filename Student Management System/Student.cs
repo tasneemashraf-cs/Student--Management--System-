@@ -14,6 +14,7 @@ namespace Student_Management_System
         public int Age { get; set; }
         public decimal Percentage { get; set; }
 
+        public ICollection<Course> Courses { get; set; } = new List<Course>();
         public override string ToString()
         {
             return $"Id {Id}  FullName: {FullName} Emai {Email} age {Age} Percentage {Percentage} ";
